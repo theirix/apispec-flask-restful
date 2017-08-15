@@ -25,6 +25,7 @@ Typical usage
 -------------
 
 .. code-block:: python
+
     from pprint import pprint
 
     from flask_restful import Api, Resource
