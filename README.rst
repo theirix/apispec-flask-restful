@@ -2,6 +2,8 @@
 apispec_flask_restful
 =====================
 
+.. image:: https://badge.fury.io/py/apispec-flask-restful.svg
+    :target: https://badge.fury.io/py/apispec-flask-restful
 
 Flask-RESTful plugin.
 
