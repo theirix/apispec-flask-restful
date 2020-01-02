@@ -6,7 +6,4 @@ try:
 except:
     __version__ = 'unknown'
 
-
-def setup(spec):
-    from apispec_flask_restful.flask_restful import path_helper
-    spec.register_path_helper(path_helper)
+from .flask_restful import RestfulPlugin

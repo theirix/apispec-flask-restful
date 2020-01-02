@@ -4,7 +4,9 @@
 import logging
 import re
 
-from apispec import Path, utils
+import yaml
+import apispec
+from apispec import yaml_utils
 from apispec.exceptions import APISpecError
 
 
@@ -13,7 +15,7 @@ def deduce_path(resource, **kwargs):
     api = kwargs.get('api', None)
     if not api:
         # flask-restful resource url passed
-        return kwargs.get('path').path
+        return kwargs.get('path')
 
     # flask-restful API passed
     # Require MethodView
@@ -31,7 +33,7 @@ def deduce_path(resource, **kwargs):
                 raise APISpecError('Cannot find blueprint resource {}'.format(resource.endpoint))
         else:
             # Application not initialized yet, fallback to path
-            return kwargs.get('path').path
+            return kwargs.get('path')
 
     else:
         for rule in api.app.url_map.iter_rules():
@@ -44,33 +46,41 @@ def deduce_path(resource, **kwargs):
     return rule.rule
 
 
-def parse_operations(resource):
+def parse_operations(resource, operations):
     """Parse operations for each method in a flask-restful resource"""
-    operations = {}
     for method in resource.methods:
         docstring = getattr(resource, method.lower()).__doc__
         if docstring:
-            operation = utils.load_yaml_from_docstring(docstring)
+            try:
+                operation = yaml_utils.load_yaml_from_docstring(docstring)
+            except yaml.YAMLError:
+                operation = None
             if not operation:
                 logging.getLogger(__name__).warning(
                     'Cannot load docstring for {}/{}'.format(resource, method))
             operations[method.lower()] = operation or dict()
-    return operations
 
 
-def path_helper(_spec, **kwargs):
+class RestfulPlugin(apispec.BasePlugin):
     """Extracts swagger spec from `flask-restful` methods."""
-    try:
-        resource = kwargs.pop('resource')
+    def path_helper(self, path=None, operations=None, parameters=None, **kwargs):
+        kwargs["path"] = path
+        try:
+            resource = kwargs.pop('resource')
+            path = deduce_path(resource, **kwargs)
+            path = re.sub(r'<(?:[^:<>]+:)?([^<>]+)>', r'{\1}', path)
+            return path
+        except Exception as exc:
+            logging.getLogger(__name__).exception('Exception parsing APISpec', exc_info=exc)
+            raise
 
-        path = deduce_path(resource, **kwargs)
+    def operation_helper(self, path=None, operations=None, **kwargs):
+        if operations is None:
+            return
+        try:
+            resource = kwargs.pop('resource')
+            parse_operations(resource, operations)
+        except Exception as exc:
+            logging.getLogger(__name__).exception('Exception parsing APISpec', exc_info=exc)
+            raise
 
-        # normalize path
-        path = re.sub(r'<(?:[^:<>]+:)?([^<>]+)>', r'{\1}', path)
-
-        operations = parse_operations(resource)
-
-        return Path(path=path, operations=operations)
-    except Exception as exc:
-        logging.getLogger(__name__).exception("Exception parsing APISpec %s", exc)
-        raise

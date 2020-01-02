@@ -4,6 +4,7 @@ import pytest
 from apispec import APISpec
 from flask import Flask, Blueprint
 from flask_restful import Api, Resource
+from apispec_flask_restful import RestfulPlugin
 
 __author__ = "theirix"
 __copyright__ = "theirix"
@@ -15,13 +16,14 @@ def spec():
     return APISpec(
         title='Swagger Petstore',
         version='1.0.0',
+        openapi_version='3.0.2',
         description='This is a sample Petstore server.  You can find out more '
                     'about Swagger at <a href=\"http://swagger.wordnik.com\">'
                     'http://swagger.wordnik.com</a> or on irc.freenode.net, #swagger.'
                     'For this sample, you can use the api key \"special-key\" to test the'
                     'authorization filters',
         plugins=[
-            'apispec_flask_restful'
+            RestfulPlugin()
         ]
     )
 
@@ -52,11 +54,12 @@ class TestPathHelpers:
 
         api.add_resource(HelloResource, '/hello')
 
-        spec.add_path(resource=HelloResource, api=api,
+        spec.path(resource=HelloResource, api=api,
                       operations={'get': {'parameters': [], 'responses': {'200': '..params..'}}})
         assert '/hello' in spec._paths
         assert 'get' in spec._paths['/hello']
-        expected = {'parameters': [], 'responses': {'200': '..params..'}}
+        expected = {'parameters': [],
+                    'responses': {'200': {'$ref': '#/components/responses/..params..'}}}
         assert spec._paths['/hello']['get'] == expected
 
     def test_path_from_view_added_via_path(self, api, spec):
@@ -66,11 +69,12 @@ class TestPathHelpers:
 
         api.add_resource(HelloResource, '/hello')
 
-        spec.add_path(resource=HelloResource, path='/hello',
+        spec.path(resource=HelloResource, path='/hello',
                       operations={'get': {'parameters': [], 'responses': {'200': '..params..'}}})
         assert '/hello' in spec._paths
         assert 'get' in spec._paths['/hello']
-        expected = {'parameters': [], 'responses': {'200': '..params..'}}
+        expected = {'parameters': [],
+                    'responses': {'200': {'$ref': '#/components/responses/..params..'}}}
         assert spec._paths['/hello']['get'] == expected
 
     def test_path_with_multiple_methods(self, api, spec):
@@ -83,7 +87,7 @@ class TestPathHelpers:
 
         api.add_resource(HelloResource, '/hello')
 
-        spec.add_path(resource=HelloResource, api=api, operations=dict(
+        spec.path(resource=HelloResource, api=api, operations=dict(
             get={'description': 'get a greeting', 'responses': {'200': '..params..'}},
             post={'description': 'post a greeting', 'responses': {'200': '..params..'}}
         ))
@@ -121,7 +125,7 @@ class TestPathHelpers:
 
         api.add_resource(HelloResource, '/hello')
 
-        spec.add_path(resource=HelloResource, api=api)
+        spec.path(resource=HelloResource, api=api)
         get_op = spec._paths['/hello']['get']
         post_op = spec._paths['/hello']['post']
         extension = spec._paths['/hello']['get']['x-extension']
@@ -146,7 +150,7 @@ class TestPathHelpers:
 
         api.add_resource(HelloResource, '/hello')
 
-        spec.add_path(resource=HelloResource, api=api)
+        spec.path(resource=HelloResource, api=api)
         get_op = spec._paths['/hello']['get']
         assert not get_op
 
@@ -157,7 +161,7 @@ class TestPathHelpers:
 
         api.add_resource(HelloResource, '/pet/<pet_id>')
 
-        spec.add_path(resource=HelloResource, api=api)
+        spec.path(resource=HelloResource, api=api)
         assert '/pet/{pet_id}' in spec._paths
 
     def test_path_blueprint(self, app, spec):
@@ -170,11 +174,12 @@ class TestPathHelpers:
         app.register_blueprint(bp, url_prefix='/v1')
         api.add_resource(HelloResource, '/hello')
 
-        spec.add_path(resource=HelloResource, api=api, app=app,
+        spec.path(resource=HelloResource, api=api, app=app,
                       operations={'get': {'parameters': [], 'responses': {'200': '..params..'}}})
         assert '/v1/hello' in spec._paths
         assert 'get' in spec._paths['/v1/hello']
-        expected = {'parameters': [], 'responses': {'200': '..params..'}}
+        expected = {'parameters': [],
+                    'responses': {'200': {'$ref': '#/components/responses/..params..'}}}
         assert spec._paths['/v1/hello']['get'] == expected
 
     def test_path_blueprint_no_app_fallback(self, app, spec):
@@ -187,10 +192,11 @@ class TestPathHelpers:
         app.register_blueprint(bp, url_prefix='/v1')
         api.add_resource(HelloResource, '/hello')
 
-        spec.add_path(resource=HelloResource, api=api, app=None,
+        spec.path(resource=HelloResource, api=api, app=None,
                       path='/v1/hello',
                       operations={'get': {'parameters': [], 'responses': {'200': '..params..'}}})
         assert '/v1/hello' in spec._paths
         assert 'get' in spec._paths['/v1/hello']
-        expected = {'parameters': [], 'responses': {'200': '..params..'}}
+        expected = {'parameters': [],
+                    'responses': {'200': {'$ref': '#/components/responses/..params..'}}}
         assert spec._paths['/v1/hello']['get'] == expected

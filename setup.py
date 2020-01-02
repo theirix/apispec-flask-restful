@@ -23,7 +23,7 @@ setup(
     ],
     packages=find_packages(exclude=['tests', 'tests.*']),
     entry_points={},
-    install_requires=['apispec', 'Flask-RESTful'],
+    install_requires=['apispec[yaml]', 'Flask-RESTful'],
     tests_require=['pytest', 'pytest-cov'],
     test_suite='tests'
 )

@@ -31,6 +31,7 @@ Typical usage
     from flask_restful import Api, Resource
     from flask import Flask
     from apispec import APISpec
+    from apispec_flask_restful import RestfulPlugin
 
     class HelloResource(Resource):
         def get(self, hello_id):
@@ -47,11 +48,11 @@ Typical usage
 
     app = Flask(__name__)
     api = Api(app)
-    spec = APISpec(title='Spec', version='1.0', plugins=['apispec_flask_restful'])
+    spec = APISpec(title='Spec', version='1.0', openapi_version='3.0.2', plugins=[RestfulPlugin()])
 
     api.add_resource(HelloResource, '/hello')
 
-    spec.add_path(resource=HelloResource, api=api)
+    spec.path(resource=HelloResource, api=api)
     pprint(spec.to_dict()['paths'])
 
     # OrderedDict([('/hello',
