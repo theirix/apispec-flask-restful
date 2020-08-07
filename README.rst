@@ -7,7 +7,7 @@ apispec_flask_restful
 
 Flask-RESTful plugin.
 
-Includes a path helper that allows you to pass a Flask-RESTful resource object to `add_path`.
+Includes a path helper that allows you to pass a Flask-RESTful resource object to `path`.
 
 Inspired by AndrewPashkin/apispec_restful plugin.
 
@@ -63,11 +63,11 @@ Typical usage
 Without API
 -----------
 
-Method `add_path` can be invoked with a resource path in a `path` parameter instead of `api` parameter:
+Method `path` can be invoked with a resource path in a `path` parameter instead of `api` parameter:
 
 .. code-block:: python
 
-        spec.add_path(resource=HelloResource, path='/hello')
+        spec.path(resource=HelloResource, path='/hello')
 
 With Blueprint
 --------------
@@ -76,5 +76,5 @@ Flask blueprints are supported too by passing Flask app in `app` parameter:
 
 .. code-block:: python
 
-        spec.add_path(resource=HelloResource, api=api, app=app)
+        spec.path(resource=HelloResource, api=api, app=app)
 
