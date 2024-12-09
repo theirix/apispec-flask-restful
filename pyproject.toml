@@ -33,3 +33,9 @@ dev = [
     "pytest-cov>=4",
     "black~=23.0"
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+addopts = [
+    "--import-mode=importlib",
+]
