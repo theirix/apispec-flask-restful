@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import pkg_resources
+from importlib.metadata import version
 
 try:
-    __version__ = pkg_resources.get_distribution(__name__).version
+    __version__ = version('apispec-flask-restful')
 except:
     __version__ = 'unknown'
 
