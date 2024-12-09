@@ -1,0 +1,35 @@
+[project]
+name = "apispec-flask-restful"
+version = "0.2.0"
+description = "Flask-RESTful plugin for apispec."
+authors = [
+    {name="theirix", email="theirix@gmail.com"}
+]
+license = {file = "LICENSE.txt"}
+readme = "README.rst"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Topic :: Utilities",
+    "Programming Language :: Python",
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: MIT License'
+]
+keywords = ["apispec", "swagger", "openapi", "specification", "documentation", "spec", "rest api"]
+requires-python = ">=3.8"
+
+dependencies = [
+    "apispec[yaml] >= 1.0",
+    "Flask-RESTful"
+]
+
+[project.urls]
+Homepage = "https://github.com/theirix/apispec-flask-restful"
+Repository = "https://github.com/theirix/apispec-flask-restful"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+    "pylint>=2.6.0",
+    "pytest-cov>=4",
+    "black~=23.0"
+]
