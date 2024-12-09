@@ -10,6 +10,7 @@ from apispec_flask_restful import RestfulPlugin
 # pylint: disable=redefined-outer-name
 # pylint: disable=unused-argument
 
+
 @pytest.fixture()
 def spec():
     return APISpec(
