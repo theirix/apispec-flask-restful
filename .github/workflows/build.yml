@@ -34,7 +34,9 @@ jobs:
       run: uv run pylint apispec_flask_restful tests
 
     - name: Install tools
-      run: uv tool install black isort
+      run: |
+        uv tool install black
+        uv tool install isort
 
     - name: Run black
       run: uv tool run black --check .
