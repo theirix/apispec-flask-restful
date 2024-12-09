@@ -1,0 +1,33 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: publish
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+
+    - name: Install the project
+      run: uv sync --all-extras --dev
+
+    - name: Publish
+      run: uv publush
