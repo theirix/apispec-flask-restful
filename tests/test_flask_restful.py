@@ -169,7 +169,7 @@ class TestPathHelpers:
             def get(self, hello_id):
                 return 'hi'
 
-        bp = Blueprint(app, __name__)
+        bp = Blueprint("bp", __name__)
         api = Api(bp)
         app.register_blueprint(bp, url_prefix='/v1')
         api.add_resource(HelloResource, '/hello')
@@ -187,7 +187,7 @@ class TestPathHelpers:
             def get(self, hello_id):
                 return 'hi'
 
-        bp = Blueprint(app, __name__)
+        bp = Blueprint("bp", __name__)
         api = Api(bp)
         app.register_blueprint(bp, url_prefix='/v1')
         api.add_resource(HelloResource, '/hello')
