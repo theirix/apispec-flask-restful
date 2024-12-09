@@ -29,3 +29,15 @@ jobs:
 
     - name: Run tests
       run: uv run pytest tests
+
+    - name: Run pylint
+      run: uv run pylint apispec_flask_restful tests
+
+    - name: Install tools
+      run: uv tool install black isort
+
+    - name: Run black
+      run: uv tool run black --check .
+
+    - name: Run isort
+      run: uv tool run isort --check-only .

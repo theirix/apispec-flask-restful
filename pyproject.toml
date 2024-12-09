@@ -31,11 +31,19 @@ dev = [
     "pytest>=8.3.4",
     "pylint>=2.6.0",
     "pytest-cov>=4",
-    "black~=23.0"
 ]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
 addopts = [
     "--import-mode=importlib",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint.messages_control]
+disable = [
+    "missing-module-docstring", "missing-function-docstring", "missing-class-docstring",
+    "too-few-public-methods", "protected-access", "consider-using-f-string", "logging-format-interpolation"
 ]
