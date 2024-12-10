@@ -1,6 +1,6 @@
 [project]
 name = "apispec-flask-restful"
-version = "0.2.0"
+version = "0.3.0"
 description = "Flask-RESTful plugin for apispec."
 authors = [
     {name="theirix", email="theirix@gmail.com"}
