@@ -9,6 +9,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    environment: default
     strategy:
       matrix:
         python-version: [ "3.8", "3.10", "3.12" ]
